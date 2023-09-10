@@ -1,6 +1,6 @@
-from django.shortcuts import render
-from django.views.generic import ListView
-from catalog.models import Product, Category
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from catalog.models import Product, Category, Post
 
 
 class CategoryListView(ListView):
@@ -9,14 +9,6 @@ class CategoryListView(ListView):
         'title': 'Категории',
     }
     template_name = 'catalog/category_list.html'
-
-
-class BlogListView(ListView):
-    model = Product
-    extra_context = {
-        'title': 'Блог'
-    }
-    template_name = 'catalog/blog_list.html'
 
 
 class ProductListView(ListView):
@@ -43,3 +35,29 @@ class SpecificListView(ListView):
         context_data['title'] = f'Категория: {category_item.name}'
 
         return context_data
+
+
+class PostCreateView(CreateView):
+    model = Post
+    fields = ('title', 'content',)
+    success_url = reverse_lazy('catalog:post_list')
+
+
+class PostUpdateView(UpdateView):
+    model = Post
+    fields = ('title', 'content',)
+    success_url = reverse_lazy('catalog:post_list')
+
+
+class PostListView(ListView):
+    model = Post
+
+
+class PostDetailView(DetailView):
+    model = Post
+
+
+class PostDeleteView(DeleteView):
+    model = Post
+    success_url = reverse_lazy('catalog:post_list')
+

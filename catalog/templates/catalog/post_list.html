@@ -1,0 +1,27 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+  <div class="col-12 mb-5">
+      <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:post_form' %}">Создать</a>
+  </div>
+      {% for object in object_list %}
+          <div class="col-3">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal">{{ object.title }}</h4>
+                      </div>
+                      <div class="card-body">
+                          <h1 class="card-title pricing-card-title">_</h1>
+                          <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                          {{ object.content }}
+                          </ul>
+                              <nav>
+                                  <a class="p-2 btn btn-primary" href="{% url 'catalog:view' object.pk %}">Смотреть</a>
+                                  <a class="p-2 btn btn-warning" href="{% url 'catalog:edit' object.pk %}">Редактировать</a>
+                                  <a class="p-2 btn btn-danger" href="{% url 'catalog:delete' object.pk %}">Удалить</a>
+                              </nav>
+                      </div>
+                  </div>
+              </div>
+    {% endfor %}
+{% endblock %}

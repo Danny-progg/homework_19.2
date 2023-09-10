@@ -4,6 +4,7 @@ NUllABLE = {'blank': True, 'null': True}
 
 
 class Category(models.Model):
+    objects = None
     name = models.CharField(max_length=100, verbose_name='Наименование', **NUllABLE)
     description = models.CharField(max_length=100, verbose_name='Описание', **NUllABLE)
 
@@ -32,5 +33,18 @@ class Product(models.Model):
         verbose_name_plural = 'продукты'
 
 
-class Blog(models.Model):
-    pass
+class Post(models.Model):
+    title = models.CharField(max_length=100, verbose_name='Заголовок', **NUllABLE)
+    # slug = models.CharField(max_length=100, verbose_name='slug', **NUllABLE),
+    content = models.TextField(max_length=100, verbose_name='Содержимое', **NUllABLE)
+    # preview = models.ImageField(upload_to='images/', verbose_name='Изображение', **NUllABLE)
+    # date_start = models.DateTimeField(verbose_name='Дата создания', **NUllABLE)
+    # is_published = models.BooleanField(default=True, verbose_name='опубликовано')
+    # views_count = models.IntegerField(default=0, verbose_name='просмотры')
+
+    def __str__(self):
+        return f'{self.title} - {self.content}'
+
+    class Meta:
+        verbose_name = 'пост'
+        verbose_name_plural = 'посты'
