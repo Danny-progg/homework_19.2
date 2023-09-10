@@ -1,24 +1,22 @@
 from django.shortcuts import render
 from django.views.generic import ListView
-
 from catalog.models import Product, Category
 
 
-def index(request):
-    products_list = Category.objects.all()
-    context = {
-        'object_list': products_list,
-        'title': 'Главная'
+class CategoryListView(ListView):
+    model = Category
+    extra_context = {
+        'title': 'Категории',
     }
-    return render(request, 'catalog/index.html', context)
+    template_name = 'catalog/category_list.html'
 
 
-class ContactListView(ListView):
+class BlogListView(ListView):
     model = Product
     extra_context = {
-        'title': 'Контакты'
+        'title': 'Блог'
     }
-    template_name = 'catalog/contact_list.html'
+    template_name = 'catalog/blog_list.html'
 
 
 class ProductListView(ListView):
@@ -29,3 +27,19 @@ class ProductListView(ListView):
     template_name = 'catalog/product_list.html'
 
 
+class SpecificListView(ListView):
+    model = Product
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(category_id=self.kwargs.get('pk'))
+        return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+
+        category_item = Category.objects.get(pk=self.kwargs.get('pk'))
+        context_data['category_pk'] = category_item.pk,
+        context_data['title'] = f'Категория: {category_item.name}'
+
+        return context_data

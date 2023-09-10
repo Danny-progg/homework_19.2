@@ -13,7 +13,7 @@
                           {{ object.description | truncatechars:100 }}
                       </ul>
                           <nav>
-                              <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_list' %}">Посмотреть</a>
+                              <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:spec_category_list' object.pk %}">Посмотреть</a>
                           </nav>
                   </div>
               </div>
