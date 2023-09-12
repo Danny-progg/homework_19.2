@@ -1,8 +1,8 @@
-{% extends 'catalog/base.html' %}
+{% extends 'blog/base.html' %}
 
 {% block content %}
   <div class="col-12 mb-5">
-      <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:post_form' %}">Создать</a>
+      <a class="p-2 btn btn-outline-primary" href="{% url 'blog:post_form' %}">Создать</a>
   </div>
       {% for object in object_list %}
           <div class="col-3">
@@ -16,9 +16,9 @@
                           {{ object.content }}
                           </ul>
                               <nav>
-                                  <a class="p-2 btn btn-primary" href="{% url 'catalog:view' object.pk %}">Смотреть</a>
-                                  <a class="p-2 btn btn-warning" href="{% url 'catalog:edit' object.pk %}">Редактировать</a>
-                                  <a class="p-2 btn btn-danger" href="{% url 'catalog:delete' object.pk %}">Удалить</a>
+                                  <a class="p-2 btn btn-primary" href="{% url 'blog:view' object.pk %}">Смотреть</a>
+                                  <a class="p-2 btn btn-warning" href="{% url 'blog:edit' object.pk %}">Редактировать</a>
+                                  <a class="p-2 btn btn-danger" href="{% url 'blog:delete' object.pk %}">Удалить</a>
                               </nav>
                       </div>
                   </div>

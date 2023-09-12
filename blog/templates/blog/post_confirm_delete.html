@@ -1,4 +1,4 @@
-{% extends 'catalog/base.html' %}
+{% extends 'blog/base.html' %}
 
 {% block content %}
     <div class="row">
@@ -9,7 +9,7 @@
                         {% csrf_token %}
                         <div>Хотите удалить пост: {{ object.title }}?</div>
                         <button type="submit" class="btn btn-danger">Подтвердить</button>
-                        <a class="p-2 btn btn-warning" href="{% url 'catalog:post_list' %}">Отменить</a>
+                        <a class="p-2 btn btn-warning" href="{% url 'blog:post_list' %}">Отменить</a>
                     </form>
                 </div>
             </div>

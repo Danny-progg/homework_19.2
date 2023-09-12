@@ -1,8 +1,8 @@
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-from pytils.translit import slugify
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 
-from catalog.models import Product, Category, Post
+from catalog.forms import ProductForm
+from catalog.models import Product, Category
 
 
 class CategoryListView(ListView):
@@ -37,58 +37,27 @@ class SpecificListView(ListView):
         context_data['title'] = f'Категория: {category_item.name}'
 
         return context_data
+    
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    success_url = reverse_lazy('catalog:product_list')
 
 
-class PostCreateView(CreateView):
-    model = Post
-    fields = ('title', 'content',)
-    success_url = reverse_lazy('catalog:post_list')
-
-    def form_valid(self, form):
-        if form.is_valid():
-            new_post = form.save()
-            new_post.slug = slugify(new_post.title)
-            new_post.save()
-
-        return super().form_valid(form)
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    success_url = reverse_lazy('catalog:product_list')
 
 
-class PostUpdateView(UpdateView):
-    model = Post
-    fields = ('title', 'content',)
-    # success_url = reverse_lazy('catalog:post_list')
-
-    def form_valid(self, form):
-        if form.is_valid():
-            new_post = form.save()
-            new_post.slug = slugify(new_post.title)
-            new_post.save()
-
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse('catalog:view', args=[self.kwargs.get('pk')])
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('catalog:product_list')
 
 
-class PostListView(ListView):
-    model = Post
+class ProductDetailView(DetailView):
+    model = Product
+    form_class = ProductForm
+    success_url = reverse_lazy('catalog:product_list')
 
-    def get_queryset(self, *args, **kwargs):
-        queryset = super().get_queryset(*args, **kwargs)
-        queryset = queryset.filter(is_published=True)
-        return queryset
-
-
-class PostDetailView(DetailView):
-    model = Post
-
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        self.object.views_count += 1
-        self.object.save()
-        return self.object
-
-
-class PostDeleteView(DeleteView):
-    model = Post
-    success_url = reverse_lazy('catalog:post_list')
