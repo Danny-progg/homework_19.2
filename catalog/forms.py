@@ -20,10 +20,11 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
 
     def clean_name(self):
         cleaned_data = self.cleaned_data['name']
+        word_list = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 
-        if 'казино' or 'криптовалюта' or 'крипта' or 'биржа' or 'дешево' or 'бесплатно' or 'обман' or 'полиция' or 'радар' in cleaned_data:
-            raise forms.ValidationError('Такое название нельзя использовать!')
-
+        for word in word_list:
+            if word in cleaned_data:
+                raise forms.ValidationError('Такое название нельзя использовать!')
         return cleaned_data
 
 
