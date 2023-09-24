@@ -1,0 +1,1 @@
+[{"model": "blog.post", "pk": 2, "fields": {"title": "тест - 1", "content": "1 - тест", "preview": "", "date_start": null, "is_published": true, "views_count": 2}}]
