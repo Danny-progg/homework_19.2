@@ -1,28 +1,47 @@
 {% extends 'catalog/base.html' %}
 {% load my_tags %}
 {% block content %}
-    <div class="col-12 mb-5">
-        <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_form' %}">Создать</a>
-    </div>
-        {% for object in object_list %}
-          <div class="col-3">
-              <div class="card mb-4 box-shadow">
-                  <img class="cardimg-top"
-                       src="{{ object.image|mediapath }}"
-                       alt="Card image cap">
-                  <div class="card-header">
-                      <h4 class="my-0 font-weight-normal">{{ object.name }}</h4>
-                  </div>
-                  <div class="card-body">
-                      <h1 class="card-title pricing-card-title">{{ object.price }}</h1>
-                      <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                          {{ object.description | truncatechars:100 }}
-                      </ul>
-                          <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_detail' object.pk %}">Посмотреть</a>
-                          <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_update_form' object.pk %}">Редактировать</a>
-                          <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_confirm_delete' object.pk %}">Удалить</a>
+    {% if user.is_authenticated %}
+        <div class="col-12 mb-5">
+            <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_form' %}">Создать</a>
+        </div>
+            {% for object in object_list %}
+              <div class="col-3">
+                  <div class="card mb-4 box-shadow">
+                      <img class="cardimg-top"
+                           src="{{ object.image|mediapath }}"
+                           alt="Card image cap">
+                      <div class="card-header">
+                          <h4 class="my-0 font-weight-normal">{{ object.name }}</h4>
+                      </div>
+                      <div class="card-body">
+                          <h1 class="card-title pricing-card-title">{{ object.price }}</h1>
+                          <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                              {{ object.description | truncatechars:100 }}<br>
+                              {{ object.vendor|default:"Нет продавца" }}
+                          </ul>
+                              <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_detail' object.pk %}">Посмотреть</a>
+                              <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_update_form' object.pk %}">Редактировать</a>
+                              <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_confirm_delete' object.pk %}">Удалить</a>
+                      </div>
                   </div>
               </div>
-          </div>
-        {% endfor %}
+            {% endfor %}
+    {% else %}
+            {% for object in object_list %}
+              <div class="col-3">
+                  <div class="card mb-4 box-shadow">
+                      <img class="cardimg-top"
+                           src="{{ object.image|mediapath }}"
+                           alt="Card image cap">
+                      <div class="card-header">
+                          <h4 class="my-0 font-weight-normal">{{ object.name }}</h4>
+                      </div>
+                      <div class="card-body">
+                          <h1 class="card-title pricing-card-title">Вы не авторизованы</h1>
+                      </div>
+                  </div>
+              </div>
+            {% endfor %}
+    {% endif %}
 {% endblock %}
