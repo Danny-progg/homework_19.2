@@ -34,17 +34,20 @@ class RegisterView(CreateView):
         confirm_url = self.request.build_absolute_uri(reverse('users:confirm', args=[vrf_token]))
         user.vrf_token = vrf_token
         user.save()
+        subject = 'Поздравляем с регистрацией!'
+        message = f'Для подтверждения регистрации перейдите по ссылке {confirm_url}!'
+        from_email = settings.EMAIL_HOST_USER
         send_mail(
-            subject='Поздравляем с регистрацией!',
-            message='Вы зарегистрировались на нашей платформе, добро пожаловать!',
-            from_email=settings.EMAIL_HOST_USER,
+            subject=subject,
+            message=message,
+            from_email=from_email,
             recipient_list=[user.email]
         )
         return super().form_valid(form)
 
 
 class ConfirmRegistrationView(View):
-    def get(self, request, vrf_token):
+    def get(self,  request, vrf_token):
         try:
             user = User.objects.get(vrf_token=vrf_token)
             user.is_active = True
