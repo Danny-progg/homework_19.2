@@ -1,4 +1,7 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.forms import inlineformset_factory
+from django.http import Http404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 
@@ -6,7 +9,7 @@ from catalog.forms import ProductForm, VersionForm
 from catalog.models import Product, Category, Version
 
 
-class CategoryListView(ListView):
+class CategoryListView(LoginRequiredMixin, ListView):
     model = Category
     extra_context = {
         'title': 'Категории',
@@ -14,7 +17,7 @@ class CategoryListView(ListView):
     template_name = 'catalog/category_list.html'
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     extra_context = {
         'title': 'Продукты'
@@ -22,7 +25,7 @@ class ProductListView(ListView):
     template_name = 'catalog/product_list.html'
 
 
-class SpecificListView(ListView):
+class SpecificListView(LoginRequiredMixin, ListView):
     model = Product
 
     def get_queryset(self):
@@ -40,8 +43,9 @@ class SpecificListView(ListView):
         return context_data
     
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
+    permission_required = 'catalog.create_product'
     form_class = ProductForm
     success_url = reverse_lazy('catalog:product_list')
 
@@ -71,8 +75,9 @@ class ProductCreateView(CreateView):
     #     return super().form_valid(form)
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
+    permission_required = 'catalog.change_product'
     form_class = ProductForm
     success_url = reverse_lazy('catalog:product_list')
 
@@ -94,14 +99,22 @@ class ProductUpdateView(UpdateView):
 
         return super().form_valid(form)
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.vendor != self.request.user:
+            raise Http404
+        return self.object
 
-class ProductDeleteView(DeleteView):
+
+class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Product
+    permission_required = 'catalog.delete_product'
     success_url = reverse_lazy('catalog:product_list')
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Product
+    permission_required = 'catalog.detail_product'
     form_class = ProductForm
     success_url = reverse_lazy('catalog:product_list')
 
