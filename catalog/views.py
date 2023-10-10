@@ -1,20 +1,32 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.cache import cache
 from django.forms import inlineformset_factory
 from django.http import Http404
+from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 
 from catalog.forms import ProductForm, VersionForm
 from catalog.models import Product, Category, Version
+from catalog.services import get_categories_cache
 
 
-class CategoryListView(LoginRequiredMixin, ListView):
-    model = Category
-    extra_context = {
+# class CategoryListView(LoginRequiredMixin, ListView):
+#     model = Category
+#     extra_context = {
+#         'title': 'Категории',
+#     }
+#     template_name = 'catalog/category_list.html'
+
+@login_required
+def categories(request):
+    context = {
+        'object_list': get_categories_cache(),
         'title': 'Категории',
     }
-    template_name = 'catalog/category_list.html'
+    return render(request, 'catalog/category_list.html', context)
 
 
 class ProductListView(LoginRequiredMixin, ListView):
